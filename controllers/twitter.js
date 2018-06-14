@@ -4,7 +4,7 @@ const { consumer_key, consumer_secret, access_token, access_token_secret } =
   process.env.NODE_ENV === 'production'
     ? process.env
     : require('../config/twitConfig');
-const tone = require('./watson')
+const tone = require('./watson');
 
 const T = new Twit({
   consumer_key: consumer_key,
@@ -14,6 +14,9 @@ const T = new Twit({
 });
 
 const getTweets = (req, res, next) => {
+  let emotionObj = { score: 0 };
+  let languageObj = { score: 0 };
+  let socialObj = { score: 0 };
   T.get(
     'statuses/user_timeline',
     { screen_name: req.params.twitter_username, count: 1 },
@@ -26,32 +29,32 @@ const getTweets = (req, res, next) => {
         data.forEach(function(tweet) {
           arrOfTexts.push(tweet.text);
         });
-        tone(arrOfTexts.join(''))
-        .then(result => {
-          let emotionObj = {score:0};
-          let languageObj = {score:0};
-          let socialObj = { score: 0};
+        tone(arrOfTexts.join('')).then(result => {
+          console.log(result);
 
-          result = JSON.parse(result)
+          result = JSON.parse(result);
           result.document_tone.tone_categories[0].tones.forEach(emotion => {
             if (emotion.score > emotionObj.score) {
               emotionObj = emotion;
             }
-          })
+          });
           result.document_tone.tone_categories[1].tones.forEach(language => {
             if (language.score > languageObj.score) {
               languageObj = language;
             }
-          })
+          });
           result.document_tone.tone_categories[2].tones.forEach(social => {
             if (social.score > socialObj.score) {
               socialObj = social;
             }
-           })
-           console.log({emotionObj, languageObj, socialObj})
-          res.send({ emotionObj, languageObj, socialObj })
-                //  res.send(result.tone_categories)
-        })
+          });
+          //  res.send(result.tone_categories)
+          db.many('SELECT * FROM men WHERE emotion = $1;', [
+            emotionObj.tone_name
+          ]).then(mrMan => {
+            res.send(mrMan);
+          });
+        });
       }
     }
   );
