@@ -1,3 +1,4 @@
+const DB = require('../db/index');
 const Twit = require('twit');
 const fs = require('fs');
 const { consumer_key, consumer_secret, access_token, access_token_secret } =
@@ -30,7 +31,7 @@ const getTweets = (req, res, next) => {
           arrOfTexts.push(tweet.text);
         });
         tone(arrOfTexts.join('')).then(result => {
-          console.log(result);
+          // console.log(result);
 
           result = JSON.parse(result);
           result.document_tone.tone_categories[0].tones.forEach(emotion => {
@@ -49,10 +50,10 @@ const getTweets = (req, res, next) => {
             }
           });
           //  res.send(result.tone_categories)
-          db.many('SELECT * FROM men WHERE emotion = $1;', [
+          DB.many('SELECT * FROM men WHERE emotion = $1;', [
             emotionObj.tone_name
           ]).then(mrMan => {
-            res.send(mrMan);
+            res.render('pages/result', mrMan);
           });
         });
       }
