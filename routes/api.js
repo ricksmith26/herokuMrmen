@@ -1,14 +1,17 @@
 const apiRouter = require('express').Router();
 const twitRouter = require('./twitter');
-const watsonRouter = require('./watson')
+const {getTweets} = require('../controllers/twitter')
+
 
 apiRouter.use('/twitter', twitRouter);
-// apiRouter.use("/watson", watsonRouter);
 
-// apiRouter.route('/home')
-// .get((req,res,next) => {
-//   res.render('pages/results')
-// })
+
+apiRouter.route('/home')
+  .get((req,res,next) => {
+   
+    res.render('pages/home-mr-men')
+  })
+  .post(getTweets)
 
 
 module.exports = apiRouter;

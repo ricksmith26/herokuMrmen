@@ -6,18 +6,19 @@
   }
 </style> -->
 <!-- <img src = "https://www.dropbox.com/s/9jdep4od3suuqmw/mrmen.jpg?dl=0"> -->
-<body background="https://www.dropbox.com/s/9jdep4od3suuqmw/mrmen.jpg?dl=0"></body>
+<body background="https://www.dropbox.com/s/9jdep4od3suuqmw/mrmen.jpg?dl=0">
 <h1>
   <center>
     <font face="Griffy" size="20">Which one of the Mr Men are you?</font>
   </center>
 </h1>
 
-<form action="/action.php" method="post">
+<form action="/api/home" method="POST">
   <center>
     <font face="Griffy" size 10>twitter username:</font>
-    <input twitter username="username" type="text" vspace="120" />
+    <input name="username" type="text" vspace="120" />
 
-    <input type="submit" value="Submit" />
+    <input type="submit" value="Send Request" />
   </center>
 </form>
+</body>

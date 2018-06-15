@@ -14,14 +14,17 @@ const T = new Twit({
   access_token_secret: access_token_secret
 });
 
+let emotionObj = { score: 0 };
+let languageObj = { score: 0 };
+let socialObj = { score: 0 };
+
 const getTweets = (req, res, next) => {
-  let emotionObj = { score: 0 };
-  let languageObj = { score: 0 };
-  let socialObj = { score: 0 };
+  console.log(req.body)
   T.get(
     'statuses/user_timeline',
-    { screen_name: req.params.twitter_username, count: 1 },
+    { screen_name: req.body.username, count: 50 },
     (err, data, response) => {
+
       // if there no errors
       if (!err) {
         let twitterPost = data.statuses;
@@ -32,30 +35,18 @@ const getTweets = (req, res, next) => {
         });
         tone(arrOfTexts.join(''))
           .then(result => {
-            console.log(result);
+           
 
             result = JSON.parse(result);
             result.document_tone.tone_categories[0].tones.forEach(
               emotion => {
+                console.log(emotion)
                 if (emotion.score > emotionObj.score) {
                   emotionObj = emotion;
                 }
               }
             );
-            result.document_tone.tone_categories[1].tones.forEach(
-              language => {
-                if (language.score > languageObj.score) {
-                  languageObj = language;
-                }
-              }
-            );
-            result.document_tone.tone_categories[2].tones.forEach(
-              social => {
-                if (social.score > socialObj.score) {
-                  socialObj = social;
-                }
-              }
-            );
+  
             //  res.send(result.tone_categories)
             // console.log(emotionObj.tone_name);
             return DB.many('SELECT * FROM men WHERE emotion = $1;', [
@@ -63,8 +54,8 @@ const getTweets = (req, res, next) => {
             ]);
           })
           .then(men => {
-            console.log(men[0]);
-            res.send(men[0]);
+            console.log(men[0], '<<<<<<<<<<<');
+            res.render('pages/result', {men});
           })
           .catch(next);
       }
@@ -72,4 +63,4 @@ const getTweets = (req, res, next) => {
   );
 };
 
-module.exports = { getTweets };
+module.exports = { getTweets, emotionObj };
