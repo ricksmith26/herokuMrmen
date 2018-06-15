@@ -15,3 +15,5 @@ CREATE TABLE men (
   ('Mr Happy', 'https://shop.mrmen.com/wp-content/themes/mrmen/assets/characterpic-square-mr%20happy.jpg', 'Joy'),
   ('Mr Sad', 'https://vignette.wikia.nocookie.net/mrmen/images/e/e9/Mr._Miserable.PNG/revision/latest?cb=20110524232526', 'Sadness'),
   ('Mr Mean', 'https://vignette.wikia.nocookie.net/mrmen/images/8/87/Mr_Mean_2A.jpg/revision/latest?cb=20170527183436', 'Distgust');
+
+SELECT * FROM men;

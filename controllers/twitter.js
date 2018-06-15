@@ -30,32 +30,43 @@ const getTweets = (req, res, next) => {
         data.forEach(function(tweet) {
           arrOfTexts.push(tweet.text);
         });
-        tone(arrOfTexts.join('')).then(result => {
-          // console.log(result);
+        tone(arrOfTexts.join(''))
+          .then(result => {
+            console.log(result);
 
-          result = JSON.parse(result);
-          result.document_tone.tone_categories[0].tones.forEach(emotion => {
-            if (emotion.score > emotionObj.score) {
-              emotionObj = emotion;
-            }
-          });
-          result.document_tone.tone_categories[1].tones.forEach(language => {
-            if (language.score > languageObj.score) {
-              languageObj = language;
-            }
-          });
-          result.document_tone.tone_categories[2].tones.forEach(social => {
-            if (social.score > socialObj.score) {
-              socialObj = social;
-            }
-          });
-          //  res.send(result.tone_categories)
-          DB.many('SELECT * FROM men WHERE emotion = $1;', [
-            emotionObj.tone_name
-          ]).then(mrMan => {
-            res.render('pages/result', mrMan);
-          });
-        });
+            result = JSON.parse(result);
+            result.document_tone.tone_categories[0].tones.forEach(
+              emotion => {
+                if (emotion.score > emotionObj.score) {
+                  emotionObj = emotion;
+                }
+              }
+            );
+            result.document_tone.tone_categories[1].tones.forEach(
+              language => {
+                if (language.score > languageObj.score) {
+                  languageObj = language;
+                }
+              }
+            );
+            result.document_tone.tone_categories[2].tones.forEach(
+              social => {
+                if (social.score > socialObj.score) {
+                  socialObj = social;
+                }
+              }
+            );
+            //  res.send(result.tone_categories)
+            // console.log(emotionObj.tone_name);
+            return DB.many('SELECT * FROM men WHERE emotion = $1;', [
+              emotionObj.tone_name
+            ]);
+          })
+          .then(men => {
+            console.log(men[0]);
+            res.send(men[0]);
+          })
+          .catch(next);
       }
     }
   );
